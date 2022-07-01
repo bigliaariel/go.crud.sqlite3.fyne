@@ -1,6 +1,6 @@
 package entities
 
-type note struct {
+type Note struct {
 	Id    int32
 	Title string
 	Body  string
