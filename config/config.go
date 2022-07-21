@@ -8,7 +8,7 @@ import (
 )
 
 func GetDB() (db *sql.DB, err error) {
-	db, err = sql.Open("sqlite3", "G:\\Mi unidad\\notes\\config\\data.db")
+	db, err = sql.Open("sqlite3", "data.db")
 	q := `CREATE TABLE IF NOT EXISTS 'note' (
 		'id'	INTEGER PRIMARY KEY AUTOINCREMENT,
 		'title'	TEXT,

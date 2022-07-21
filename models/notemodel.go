@@ -1,3 +1,4 @@
+// CRUD note
 package models
 
 import (
@@ -9,13 +10,14 @@ import (
 type NoteModel struct {
 }
 
+// FindAll show all notes from table note
 func (*NoteModel) FindAll() ([]entities.Note, error) {
 	db, err := config.GetDB()
 
 	if err != nil {
 		return nil, err
 	} else {
-		rows, err2 := db.Query("select title,body,color from note;")
+		rows, err2 := db.Query("select id,title,body,color from note;")
 
 		if err2 != nil {
 			return nil, err2
@@ -23,11 +25,12 @@ func (*NoteModel) FindAll() ([]entities.Note, error) {
 			var notes []entities.Note
 			for rows.Next() {
 				var note entities.Note
-				rows.Scan(&note.Title, &note.Body, &note.Color)
+				rows.Scan(&note.Id, &note.Title, &note.Body, &note.Color)
 				notes = append(notes, note)
 
 			}
 			rows.Close()
+
 			db.Close()
 			return notes, nil
 		}
@@ -36,6 +39,7 @@ func (*NoteModel) FindAll() ([]entities.Note, error) {
 
 }
 
+// Add a note
 func (*NoteModel) Add(title string, note string, color int) (err error) {
 	db, err := config.GetDB()
 
@@ -53,7 +57,8 @@ func (*NoteModel) Add(title string, note string, color int) (err error) {
 	return nil
 }
 
-func (*NoteModel) Remove(id int) (err error) {
+// Remove delete a note
+func (*NoteModel) Remove(id int32) (err error) {
 	db, err := config.GetDB()
 
 	if err != nil {
@@ -70,7 +75,8 @@ func (*NoteModel) Remove(id int) (err error) {
 	return nil
 }
 
-func (*NoteModel) Update(id int, title string, note string, color int) (err error) {
+// Update the note from id
+func (*NoteModel) Update(id int32, title string, note string, color int) (err error) {
 	db, err := config.GetDB()
 
 	if err != nil {
@@ -85,4 +91,32 @@ func (*NoteModel) Update(id int, title string, note string, color int) (err erro
 		}
 	}
 	return nil
+}
+
+// Find a note from id
+func (*NoteModel) Find(id int32) (*entities.Note, error) {
+	db, err := config.GetDB()
+
+	if err != nil {
+		return nil, err
+	} else {
+		query := fmt.Sprintf("select id,title,body,color from note WHERE id=%d;", id)
+		rows, err2 := db.Query(query)
+
+		if err2 != nil {
+			return nil, err2
+		} else {
+			var notes []entities.Note
+			for rows.Next() {
+				var note entities.Note
+				rows.Scan(&note.Id, &note.Title, &note.Body, &note.Color)
+				notes = append(notes, note)
+
+			}
+			rows.Close()
+			db.Close()
+			return &notes[0], nil
+		}
+
+	}
 }
